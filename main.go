@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	_ "library-app/docs"
 	"library-app/handler"
 	"library-app/model"
 	"library-app/repository"
@@ -9,11 +10,12 @@ import (
 	"log"
 	"net/http"
 
+	httpSwagger "github.com/swaggo/http-swagger"
+
 	"github.com/gorilla/mux"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
-
 
 // @title Library API
 // @version 1.0
@@ -27,13 +29,12 @@ import (
 // @host localhost:8080
 // @BasePath /
 func main() {
-	dsn := "user=CarRental password=CarRental dbname=LibraryApp port=5432 sslmode=disable TimeZone=Europe/Warsaw"
+	dsn := "user=CarRental password=CarRental dbname=LibraryApp port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
 	}
 
-	// Automatyczna migracja schematu bazy danych
 	db.AutoMigrate(&model.Book{})
 
 	bookRepo := repository.NewBookRepository(db)
@@ -47,6 +48,9 @@ func main() {
 	r.HandleFunc("/books", bookHandler.GetAllBooks).Methods("GET")
 	r.HandleFunc("/books/{id}", bookHandler.UpdateBook).Methods("PUT")
 	r.HandleFunc("/books/{id}", bookHandler.DeleteBook).Methods("DELETE")
+
+	// Swagger endpoint
+	r.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
 	fmt.Println("Server is running on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))

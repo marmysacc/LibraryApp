@@ -40,7 +40,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/dto.AuthorDTO"
+                                "$ref": "#/definitions/dto.AuthorViewDTO"
                             }
                         }
                     },
@@ -71,7 +71,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Author"
+                            "$ref": "#/definitions/dto.AuthorCreateDTO"
                         }
                     }
                 ],
@@ -79,7 +79,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/model.Author"
+                            "$ref": "#/definitions/dto.AuthorCreateDTO"
                         }
                     },
                     "400": {
@@ -114,7 +114,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.AuthorDTO"
+                            "$ref": "#/definitions/dto.AuthorViewDTO"
                         }
                     },
                     "400": {
@@ -232,7 +232,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/dto.BookDTO"
+                                "$ref": "#/definitions/dto.BookViewDTO"
                             }
                         }
                     },
@@ -263,7 +263,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Book"
+                            "$ref": "#/definitions/dto.BookCreateDTO"
                         }
                     }
                 ],
@@ -271,7 +271,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/model.Book"
+                            "$ref": "#/definitions/dto.BookCreateDTO"
                         }
                     },
                     "400": {
@@ -306,7 +306,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.BookDTO"
+                            "$ref": "#/definitions/dto.BookViewDTO"
                         }
                     },
                     "400": {
@@ -410,7 +410,15 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dto.AuthorDTO": {
+        "dto.AuthorCreateDTO": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.AuthorViewDTO": {
             "type": "object",
             "properties": {
                 "books": {
@@ -420,14 +428,28 @@ const docTemplate = `{
                     }
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
                 }
             }
         },
-        "dto.BookDTO": {
+        "dto.BookCreateDTO": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "genre": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.BookViewDTO": {
             "type": "object",
             "properties": {
                 "author": {
@@ -437,7 +459,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "published_at": {
                     "type": "string"
@@ -460,7 +482,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
@@ -477,13 +499,13 @@ const docTemplate = `{
                     "$ref": "#/definitions/model.Author"
                 },
                 "authorID": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "genre": {
                     "type": "string"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "published_at": {
                     "type": "string"

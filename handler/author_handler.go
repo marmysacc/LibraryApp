@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	dto "library-app/dtos"
 	"library-app/model"
 	"library-app/service"
 	"net/http"
@@ -24,18 +25,18 @@ func NewAuthorHandler(service service.AuthorService) *AuthorHandler {
 // @Tags authors
 // @Accept  json
 // @Produce  json
-// @Param author body model.Author true "Author"
-// @Success 201 {object} model.Author
+// @Param author body dto.AuthorCreateDTO true "Author"
+// @Success 201 {object} dto.AuthorCreateDTO
 // @Failure 400 {object} string
 // @Router /authors [post]
 func (h *AuthorHandler) CreateAuthor(w http.ResponseWriter, r *http.Request) {
-	var author model.Author
-	if err := json.NewDecoder(r.Body).Decode(&author); err != nil {
+	var authorDTO dto.AuthorCreateDTO
+	if err := json.NewDecoder(r.Body).Decode(&authorDTO); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	if err := h.service.CreateAuthor(&author); err != nil {
+	if err := h.service.CreateAuthor(&authorDTO); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -49,7 +50,7 @@ func (h *AuthorHandler) CreateAuthor(w http.ResponseWriter, r *http.Request) {
 // @Tags authors
 // @Produce  json
 // @Param id path int true "Author ID"
-// @Success 200 {object} dto.AuthorDTO
+// @Success 200 {object} dto.AuthorViewDTO
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Router /authors/{id} [get]
@@ -75,7 +76,7 @@ func (h *AuthorHandler) GetAuthorByID(w http.ResponseWriter, r *http.Request) {
 // @Description Get a list of all authors
 // @Tags authors
 // @Produce  json
-// @Success 200 {array} dto.AuthorDTO
+// @Success 200 {array} dto.AuthorViewDTO
 // @Failure 500 {object} string
 // @Router /authors [get]
 func (h *AuthorHandler) GetAllAuthors(w http.ResponseWriter, r *http.Request) {
@@ -114,7 +115,7 @@ func (h *AuthorHandler) UpdateAuthor(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	author.ID = uint(id)
+	author.ID = string(id)
 	if err := h.service.UpdateAuthor(&author); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

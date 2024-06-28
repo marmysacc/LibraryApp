@@ -4,14 +4,17 @@ import (
 	dto "library-app/dtos"
 	"library-app/model"
 	"library-app/repository"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 type BookService interface {
-	CreateBook(book *model.Book) error
+	CreateBook(bookDTO *dto.BookCreateDTO) error
 	UpdateBook(book *model.Book) error
 	DeleteBook(id uint) error
-	GetBookByID(id uint) (*dto.BookDTO, error)
-	GetAllBooks() ([]*dto.BookDTO, error)
+	GetBookByID(id uint) (*dto.BookViewDTO, error)
+	GetAllBooks() ([]*dto.BookViewDTO, error)
 }
 
 type bookService struct {
@@ -22,7 +25,14 @@ func NewBookService(repo repository.BookRepository) BookService {
 	return &bookService{repo}
 }
 
-func (s *bookService) CreateBook(book *model.Book) error {
+// func (s *bookService) CreateBook(book *dto.BookCreateDTO) error {
+// 	return s.repo.Create(book)
+// }
+
+func (s *bookService) CreateBook(bookDTO *dto.BookCreateDTO) error {
+	book := s.mapToBookDTO(bookDTO)
+    book.ID = uuid.New().String()
+	book.PublishedAt = time.Now()
 	return s.repo.Create(book)
 }
 
@@ -34,33 +44,41 @@ func (s *bookService) DeleteBook(id uint) error {
 	return s.repo.Delete(id)
 }
 
-func (s *bookService) GetBookByID(id uint) (*dto.BookDTO, error) {
+func (s *bookService) GetBookByID(id uint) (*dto.BookViewDTO, error) {
 	book, err := s.repo.GetByID(id)
 	if err != nil {
 		return nil, err
 	}
-	return s.mapToBookDTO(book), nil
+	return s.mapToBookViewDTO(book), nil
 }
 
-func (s *bookService) GetAllBooks() ([]*dto.BookDTO, error) {
+func (s *bookService) GetAllBooks() ([]*dto.BookViewDTO, error) {
 	books, err := s.repo.GetAll()
 	if err != nil {
 		return nil, err
 	}
 
-	var bookDTOs []*dto.BookDTO
+	var bookDTOs []*dto.BookViewDTO
 	for _, book := range books {
-		bookDTOs = append(bookDTOs, s.mapToBookDTO(book))
+		bookDTOs = append(bookDTOs, s.mapToBookViewDTO(book))
 	}
 	return bookDTOs, nil
 }
 
-func (s *bookService) mapToBookDTO(book *model.Book) *dto.BookDTO {
-	return &dto.BookDTO{
+func (s *bookService) mapToBookViewDTO(book *model.Book) *dto.BookViewDTO {
+	return &dto.BookViewDTO{
 		ID:          book.ID,
 		Title:       book.Title,
 		Genre:       book.Genre,
 		PublishedAt: book.PublishedAt,
 		AuthorName:  book.Author.Name,
+	}
+}
+
+func (s *bookService) mapToBookDTO(bookDTO *dto.BookCreateDTO) *model.Book {
+	return &model.Book{
+		Title:    bookDTO.Title,
+		Genre:    bookDTO.Genre,
+		AuthorID: bookDTO.AuthorID,
 	}
 }

@@ -35,11 +35,15 @@ func main() {
 		log.Fatal("Failed to connect to database:", err)
 	}
 
-	db.AutoMigrate(&model.Book{})
+	db.AutoMigrate(&model.Book{}, &model.Author{})
 
 	bookRepo := repository.NewBookRepository(db)
 	bookService := service.NewBookService(bookRepo)
 	bookHandler := handler.NewBookHandler(bookService)
+
+	authorRepo := repository.NewAuthorRepository(db)
+	authorService := service.NewAuthorService(authorRepo)
+	authorHandler := handler.NewAuthorHandler(authorService)
 
 	r := mux.NewRouter()
 
@@ -48,6 +52,12 @@ func main() {
 	r.HandleFunc("/books", bookHandler.GetAllBooks).Methods("GET")
 	r.HandleFunc("/books/{id}", bookHandler.UpdateBook).Methods("PUT")
 	r.HandleFunc("/books/{id}", bookHandler.DeleteBook).Methods("DELETE")
+
+	r.HandleFunc("/authors", authorHandler.CreateAuthor).Methods("POST")
+	r.HandleFunc("/authors/{id}", authorHandler.GetAuthorByID).Methods("GET")
+	r.HandleFunc("/authors", authorHandler.GetAllAuthors).Methods("GET")
+	r.HandleFunc("/authors/{id}", authorHandler.UpdateAuthor).Methods("PUT")
+	r.HandleFunc("/authors/{id}", authorHandler.DeleteAuthor).Methods("DELETE")
 
 	// Swagger endpoint
 	r.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)

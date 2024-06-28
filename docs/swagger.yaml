@@ -1,11 +1,26 @@
 basePath: /
 definitions:
+  model.Author:
+    properties:
+      books:
+        items:
+          $ref: '#/definitions/model.Book'
+        type: array
+      createdAt:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
   model.Book:
     properties:
       author:
-        type: string
-      created_at:
-        type: string
+        $ref: '#/definitions/model.Author'
+      authorID:
+        type: integer
       genre:
         type: string
       id:
@@ -13,8 +28,6 @@ definitions:
       published_at:
         type: string
       title:
-        type: string
-      updated_at:
         type: string
     type: object
 host: localhost:8080
@@ -31,6 +44,133 @@ info:
   title: Library API
   version: "1.0"
 paths:
+  /authors:
+    get:
+      description: Get a list of all authors
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Author'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get all authors
+      tags:
+      - authors
+    post:
+      consumes:
+      - application/json
+      description: Create a new author with the input payload
+      parameters:
+      - description: Author
+        in: body
+        name: author
+        required: true
+        schema:
+          $ref: '#/definitions/model.Author'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Author'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      summary: Create a new author
+      tags:
+      - authors
+  /authors/{id}:
+    delete:
+      description: Delete a author by ID
+      parameters:
+      - description: Author ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete a author by ID
+      tags:
+      - authors
+    get:
+      description: Get details of a author by ID
+      parameters:
+      - description: Author ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Author'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Get a author by ID
+      tags:
+      - authors
+    put:
+      consumes:
+      - application/json
+      description: Update details of a author by ID
+      parameters:
+      - description: Author ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Author
+        in: body
+        name: author
+        required: true
+        schema:
+          $ref: '#/definitions/model.Author'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Author'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update a author by ID
+      tags:
+      - authors
   /books:
     get:
       description: Get a list of all books

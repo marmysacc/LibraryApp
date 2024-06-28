@@ -9,8 +9,8 @@ import (
 type BookRepository interface {
 	Create(book *model.Book) error
 	Update(book *model.Book) error
-	Delete(id uint) error
-	GetByID(id uint) (*model.Book, error)
+	Delete(id string) error
+	GetByID(id string) (*model.Book, error)
 	GetAll() ([]*model.Book, error)
 }
 
@@ -30,17 +30,19 @@ func (r *bookRepository) Update(book *model.Book) error {
 	return r.db.Save(book).Error
 }
 
-func (r *bookRepository) Delete(id uint) error {
-	return r.db.Delete(&model.Book{}, id).Error
+func (r *bookRepository) Delete(id string) error {
+	return r.db.Delete(&model.Book{}, "id = ?", id).Error
 }
 
-func (r *bookRepository) GetByID(id uint) (*model.Book, error) {
+
+func (r *bookRepository) GetByID(id string) (*model.Book, error) {
 	var book model.Book
-	if err := r.db.Preload("Author").First(&book, id).Error; err != nil {
+	if err := r.db.Preload("Author").First(&book, "id = ?", id).Error; err != nil {
 		return nil, err
 	}
 	return &book, nil
 }
+
 
 func (r *bookRepository) GetAll() ([]*model.Book, error) {
 	var books []*model.Book

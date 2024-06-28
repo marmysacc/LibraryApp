@@ -12,8 +12,8 @@ import (
 type BookService interface {
 	CreateBook(bookDTO *dto.BookCreateDTO) error
 	UpdateBook(book *model.Book) error
-	DeleteBook(id uint) error
-	GetBookByID(id uint) (*dto.BookViewDTO, error)
+	DeleteBook(id string) error
+	GetBookByID(id string) (*dto.BookViewDTO, error)
 	GetAllBooks() ([]*dto.BookViewDTO, error)
 }
 
@@ -31,7 +31,7 @@ func NewBookService(repo repository.BookRepository) BookService {
 
 func (s *bookService) CreateBook(bookDTO *dto.BookCreateDTO) error {
 	book := s.mapToBookDTO(bookDTO)
-    book.ID = uuid.New().String()
+	book.ID = uuid.New().String()
 	book.PublishedAt = time.Now()
 	return s.repo.Create(book)
 }
@@ -40,11 +40,11 @@ func (s *bookService) UpdateBook(book *model.Book) error {
 	return s.repo.Update(book)
 }
 
-func (s *bookService) DeleteBook(id uint) error {
+func (s *bookService) DeleteBook(id string) error {
 	return s.repo.Delete(id)
 }
 
-func (s *bookService) GetBookByID(id uint) (*dto.BookViewDTO, error) {
+func (s *bookService) GetBookByID(id string) (*dto.BookViewDTO, error) {
 	book, err := s.repo.GetByID(id)
 	if err != nil {
 		return nil, err

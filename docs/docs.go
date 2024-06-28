@@ -103,7 +103,7 @@ const docTemplate = `{
                 "summary": "Get a author by ID",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Author ID",
                         "name": "id",
                         "in": "path",
@@ -190,7 +190,7 @@ const docTemplate = `{
                 "summary": "Delete a author by ID",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Author ID",
                         "name": "id",
                         "in": "path",
@@ -295,7 +295,7 @@ const docTemplate = `{
                 "summary": "Get a book by ID",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Book ID",
                         "name": "id",
                         "in": "path",

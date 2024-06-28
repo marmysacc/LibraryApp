@@ -49,20 +49,16 @@ func (h *BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 // @Description Get details of a book by ID
 // @Tags books
 // @Produce  json
-// @Param id path int true "Book ID"
+// @Param id path string true "Book ID"
 // @Success 200 {object} dto.BookViewDTO
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Router /books/{id} [get]
 func (h *BookHandler) GetBookByID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	id, err := strconv.Atoi(params["id"])
-	if err != nil {
-		http.Error(w, "Invalid book ID", http.StatusBadRequest)
-		return
-	}
+	id := params["id"]
 
-	book, err := h.service.GetBookByID(uint(id))
+	book, err := h.service.GetBookByID(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -135,13 +131,9 @@ func (h *BookHandler) UpdateBook(w http.ResponseWriter, r *http.Request) {
 // @Router /books/{id} [delete]
 func (h *BookHandler) DeleteBook(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	id, err := strconv.Atoi(params["id"])
-	if err != nil {
-		http.Error(w, "Invalid book ID", http.StatusBadRequest)
-		return
-	}
+	id := params["id"]
 
-	if err := h.service.DeleteBook(uint(id)); err != nil {
+	if err := h.service.DeleteBook(id); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

@@ -6,7 +6,6 @@ import (
 	"library-app/model"
 	"library-app/service"
 	"net/http"
-	"strconv"
 
 	"github.com/gorilla/mux"
 )
@@ -49,20 +48,16 @@ func (h *AuthorHandler) CreateAuthor(w http.ResponseWriter, r *http.Request) {
 // @Description Get details of a author by ID
 // @Tags authors
 // @Produce  json
-// @Param id path int true "Author ID"
+// @Param id path string true "Author ID"
 // @Success 200 {object} dto.AuthorViewDTO
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Router /authors/{id} [get]
 func (h *AuthorHandler) GetAuthorByID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	id, err := strconv.Atoi(params["id"])
-	if err != nil {
-		http.Error(w, "Invalid book ID", http.StatusBadRequest)
-		return
-	}
+	id := params["id"]
 
-	book, err := h.service.GetAuthorByID(uint(id))
+	book, err := h.service.GetAuthorByID(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -103,11 +98,7 @@ func (h *AuthorHandler) GetAllAuthors(w http.ResponseWriter, r *http.Request) {
 // @Router /authors/{id} [put]
 func (h *AuthorHandler) UpdateAuthor(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	id, err := strconv.Atoi(params["id"])
-	if err != nil {
-		http.Error(w, "Invalid author ID", http.StatusBadRequest)
-		return
-	}
+	id := params["id"]
 
 	var author model.Author
 	if err := json.NewDecoder(r.Body).Decode(&author); err != nil {
@@ -115,7 +106,7 @@ func (h *AuthorHandler) UpdateAuthor(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	author.ID = string(id)
+	author.ID = id
 	if err := h.service.UpdateAuthor(&author); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -128,20 +119,16 @@ func (h *AuthorHandler) UpdateAuthor(w http.ResponseWriter, r *http.Request) {
 // @Summary Delete a author by ID
 // @Description Delete a author by ID
 // @Tags authors
-// @Param id path int true "Author ID"
+// @Param id path string true "Author ID"
 // @Success 204
 // @Failure 400 {object} string
 // @Failure 500 {object} string
 // @Router /authors/{id} [delete]
 func (h *AuthorHandler) DeleteAuthor(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	id, err := strconv.Atoi(params["id"])
-	if err != nil {
-		http.Error(w, "Invalid author ID", http.StatusBadRequest)
-		return
-	}
+	id := params["id"]
 
-	if err := h.service.DeleteAuthor(uint(id)); err != nil {
+	if err := h.service.DeleteAuthor(id); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

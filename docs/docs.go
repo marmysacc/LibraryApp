@@ -145,7 +145,7 @@ const docTemplate = `{
                 "summary": "Update a author by ID",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Author ID",
                         "name": "id",
                         "in": "path",
@@ -157,7 +157,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Author"
+                            "$ref": "#/definitions/dto.AuthorCreateDTO"
                         }
                     }
                 ],
@@ -165,7 +165,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Author"
+                            "$ref": "#/definitions/dto.AuthorCreateDTO"
                         }
                     },
                     "400": {

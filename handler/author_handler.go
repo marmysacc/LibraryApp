@@ -3,7 +3,6 @@ package handler
 import (
 	"encoding/json"
 	dto "library-app/dtos"
-	"library-app/model"
 	"library-app/service"
 	"net/http"
 
@@ -90,9 +89,9 @@ func (h *AuthorHandler) GetAllAuthors(w http.ResponseWriter, r *http.Request) {
 // @Tags authors
 // @Accept  json
 // @Produce  json
-// @Param id path int true "Author ID"
-// @Param author body model.Author true "Author"
-// @Success 200 {object} model.Author
+// @Param id path string true "Author ID"
+// @Param author body dto.AuthorCreateDTO true "Author"
+// @Success 200 {object} dto.AuthorCreateDTO
 // @Failure 400 {object} string
 // @Failure 500 {object} string
 // @Router /authors/{id} [put]
@@ -100,14 +99,13 @@ func (h *AuthorHandler) UpdateAuthor(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id := params["id"]
 
-	var author model.Author
+	var author dto.AuthorCreateDTO
 	if err := json.NewDecoder(r.Body).Decode(&author); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	author.ID = id
-	if err := h.service.UpdateAuthor(&author); err != nil {
+	if err := h.service.UpdateAuthor(&author, id); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

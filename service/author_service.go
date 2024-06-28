@@ -11,7 +11,7 @@ import (
 
 type AuthorService interface {
 	CreateAuthor(authorDTO *dto.AuthorCreateDTO) error
-	UpdateAuthor(author *model.Author) error
+	UpdateAuthor(authorDTO *dto.AuthorCreateDTO, id string) error
 	DeleteAuthor(id string) error
 	GetAuthorByID(id string) (*dto.AuthorViewDTO, error)
 	GetAllAuthors() ([]*dto.AuthorViewDTO, error)
@@ -32,7 +32,8 @@ func (s *authorService) CreateAuthor(authorDTO *dto.AuthorCreateDTO) error {
 	return s.repo.Create(author)
 }
 
-func (s *authorService) UpdateAuthor(author *model.Author) error {
+func (s *authorService) UpdateAuthor(authorDTO *dto.AuthorCreateDTO, id string) error {
+	author := s.mapToAuthorUpdateDTO(authorDTO, id)
 	return s.repo.Update(author)
 }
 
@@ -75,6 +76,13 @@ func (s *authorService) mapToAuthorViewDTO(author *model.Author) *dto.AuthorView
 
 func (s *authorService) mapToAuthorDTO(authorDTO *dto.AuthorCreateDTO) *model.Author {
 	return &model.Author{
+		Name: authorDTO.Name,
+	}
+}
+
+func (s *authorService) mapToAuthorUpdateDTO(authorDTO *dto.AuthorCreateDTO, id string) *model.Author {
+	return &model.Author{
+		ID:   id,
 		Name: authorDTO.Name,
 	}
 }

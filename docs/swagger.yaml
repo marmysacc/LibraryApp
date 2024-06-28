@@ -184,20 +184,20 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       - description: Author
         in: body
         name: author
         required: true
         schema:
-          $ref: '#/definitions/model.Author'
+          $ref: '#/definitions/dto.AuthorCreateDTO'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Author'
+            $ref: '#/definitions/dto.AuthorCreateDTO'
         "400":
           description: Bad Request
           schema:

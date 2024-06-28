@@ -51,7 +51,7 @@ func (h *BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 // @Tags books
 // @Produce  json
 // @Param id path int true "Book ID"
-// @Success 200 {object} model.Book
+// @Success 200 {object} dto.BookDTO
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Router /books/{id} [get]
@@ -78,7 +78,7 @@ func (h *BookHandler) GetBookByID(w http.ResponseWriter, r *http.Request) {
 // @Description Get a list of all books
 // @Tags books
 // @Produce  json
-// @Success 200 {array} model.Book
+// @Success 200 {array} dto.BookDTO
 // @Failure 500 {object} string
 // @Router /books [get]
 func (h *BookHandler) GetAllBooks(w http.ResponseWriter, r *http.Request) {

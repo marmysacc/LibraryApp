@@ -35,17 +35,17 @@ func (r *authorRepository) Delete(id uint) error {
 }
 
 func (r *authorRepository) GetByID(id uint) (*model.Author, error) {
-	var book model.Author
-	if err := r.db.First(&book, id).Error; err != nil {
+	var author model.Author
+	if err := r.db.Preload("Books").First(&author, id).Error; err != nil {
 		return nil, err
 	}
-	return &book, nil
+	return &author, nil
 }
 
 func (r *authorRepository) GetAll() ([]*model.Author, error) {
-	var books []*model.Author
-	if err := r.db.Find(&books).Error; err != nil {
+	var authors []*model.Author
+	if err := r.db.Preload("Books").Find(&authors).Error; err != nil {
 		return nil, err
 	}
-	return books, nil
+	return authors, nil
 }

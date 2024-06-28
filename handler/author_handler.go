@@ -49,7 +49,7 @@ func (h *AuthorHandler) CreateAuthor(w http.ResponseWriter, r *http.Request) {
 // @Tags authors
 // @Produce  json
 // @Param id path int true "Author ID"
-// @Success 200 {object} model.Author
+// @Success 200 {object} dto.AuthorDTO
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Router /authors/{id} [get]
@@ -75,7 +75,7 @@ func (h *AuthorHandler) GetAuthorByID(w http.ResponseWriter, r *http.Request) {
 // @Description Get a list of all authors
 // @Tags authors
 // @Produce  json
-// @Success 200 {array} model.Author
+// @Success 200 {array} dto.AuthorDTO
 // @Failure 500 {object} string
 // @Router /authors [get]
 func (h *AuthorHandler) GetAllAuthors(w http.ResponseWriter, r *http.Request) {

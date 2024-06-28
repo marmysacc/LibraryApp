@@ -36,7 +36,7 @@ func (r *bookRepository) Delete(id uint) error {
 
 func (r *bookRepository) GetByID(id uint) (*model.Book, error) {
 	var book model.Book
-	if err := r.db.First(&book, id).Error; err != nil {
+	if err := r.db.Preload("Author").First(&book, id).Error; err != nil {
 		return nil, err
 	}
 	return &book, nil
@@ -44,7 +44,7 @@ func (r *bookRepository) GetByID(id uint) (*model.Book, error) {
 
 func (r *bookRepository) GetAll() ([]*model.Book, error) {
 	var books []*model.Book
-	if err := r.db.Find(&books).Error; err != nil {
+	if err := r.db.Preload("Author").Find(&books).Error; err != nil {
 		return nil, err
 	}
 	return books, nil

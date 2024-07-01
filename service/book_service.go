@@ -11,7 +11,7 @@ import (
 
 type BookService interface {
 	CreateBook(bookDTO *dto.BookCreateDTO) error
-	UpdateBook(book *model.Book) error
+	UpdateBook(book *dto.BookCreateDTO, id string) error
 	DeleteBook(id string) error
 	GetBookByID(id string) (*dto.BookViewDTO, error)
 	GetAllBooks() ([]*dto.BookViewDTO, error)
@@ -36,7 +36,8 @@ func (s *bookService) CreateBook(bookDTO *dto.BookCreateDTO) error {
 	return s.repo.Create(book)
 }
 
-func (s *bookService) UpdateBook(book *model.Book) error {
+func (s *bookService) UpdateBook(bookDTO *dto.BookCreateDTO, id string) error {
+	book := s.mapToBookUpdateDTO(bookDTO, id)
 	return s.repo.Update(book)
 }
 
@@ -80,5 +81,14 @@ func (s *bookService) mapToBookDTO(bookDTO *dto.BookCreateDTO) *model.Book {
 		Title:    bookDTO.Title,
 		Genre:    bookDTO.Genre,
 		AuthorID: bookDTO.AuthorID,
+	}
+}
+
+func (s *bookService) mapToBookUpdateDTO(bookDTO *dto.BookCreateDTO, id string) *model.Book {
+	return &model.Book{
+		ID:       id,
+		Title:    bookDTO.Title,
+		AuthorID: bookDTO.AuthorID,
+		Genre:    bookDTO.Genre,
 	}
 }

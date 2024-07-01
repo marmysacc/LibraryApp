@@ -3,10 +3,8 @@ package handler
 import (
 	"encoding/json"
 	dto "library-app/dtos"
-	"library-app/model"
 	"library-app/service"
 	"net/http"
-	"strconv"
 
 	"github.com/gorilla/mux"
 )
@@ -91,28 +89,23 @@ func (h *BookHandler) GetAllBooks(w http.ResponseWriter, r *http.Request) {
 // @Tags books
 // @Accept  json
 // @Produce  json
-// @Param id path int true "Book ID"
-// @Param book body model.Book true "Book"
-// @Success 200 {object} model.Book
+// @Param id path string true "Book ID"
+// @Param book body dto.BookCreateDTO true "Book"
+// @Success 200 {object} dto.BookCreateDTO
 // @Failure 400 {object} string
 // @Failure 500 {object} string
 // @Router /books/{id} [put]
 func (h *BookHandler) UpdateBook(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	id, err := strconv.Atoi(params["id"])
-	if err != nil {
-		http.Error(w, "Invalid book ID", http.StatusBadRequest)
-		return
-	}
+	id := params["id"]
 
-	var book model.Book
+	var book dto.BookCreateDTO
 	if err := json.NewDecoder(r.Body).Decode(&book); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	book.ID = string(id)
-	if err := h.service.UpdateBook(&book); err != nil {
+	if err := h.service.UpdateBook(&book, id); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

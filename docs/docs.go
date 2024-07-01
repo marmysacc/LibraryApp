@@ -337,7 +337,7 @@ const docTemplate = `{
                 "summary": "Update a book by ID",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Book ID",
                         "name": "id",
                         "in": "path",
@@ -349,7 +349,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Book"
+                            "$ref": "#/definitions/dto.BookCreateDTO"
                         }
                     }
                 ],
@@ -357,7 +357,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Book"
+                            "$ref": "#/definitions/dto.BookCreateDTO"
                         }
                     },
                     "400": {
@@ -453,52 +453,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "author": {
-                    "type": "string"
-                },
-                "genre": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "published_at": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.Author": {
-            "type": "object",
-            "properties": {
-                "books": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.Book"
-                    }
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.Book": {
-            "type": "object",
-            "properties": {
-                "author": {
-                    "$ref": "#/definitions/model.Author"
-                },
-                "authorID": {
                     "type": "string"
                 },
                 "genre": {

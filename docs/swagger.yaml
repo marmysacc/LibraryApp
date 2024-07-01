@@ -38,36 +38,6 @@ definitions:
       title:
         type: string
     type: object
-  model.Author:
-    properties:
-      books:
-        items:
-          $ref: '#/definitions/model.Book'
-        type: array
-      createdAt:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      updatedAt:
-        type: string
-    type: object
-  model.Book:
-    properties:
-      author:
-        $ref: '#/definitions/model.Author'
-      authorID:
-        type: string
-      genre:
-        type: string
-      id:
-        type: string
-      published_at:
-        type: string
-      title:
-        type: string
-    type: object
 host: localhost:8080
 info:
   contact:
@@ -311,20 +281,20 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       - description: Book
         in: body
         name: book
         required: true
         schema:
-          $ref: '#/definitions/model.Book'
+          $ref: '#/definitions/dto.BookCreateDTO'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Book'
+            $ref: '#/definitions/dto.BookCreateDTO'
         "400":
           description: Bad Request
           schema:

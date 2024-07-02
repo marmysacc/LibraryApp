@@ -3,7 +3,11 @@ definitions:
   dto.AuthorCreateDTO:
     properties:
       name:
+        maxLength: 50
+        minLength: 2
         type: string
+    required:
+    - name
     type: object
   dto.AuthorViewDTO:
     properties:
@@ -21,9 +25,17 @@ definitions:
       author:
         type: string
       genre:
+        maxLength: 25
+        minLength: 2
         type: string
       title:
+        maxLength: 100
+        minLength: 2
         type: string
+    required:
+    - author
+    - genre
+    - title
     type: object
   dto.BookViewDTO:
     properties:
@@ -231,7 +243,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       responses:
         "204":
           description: No Content

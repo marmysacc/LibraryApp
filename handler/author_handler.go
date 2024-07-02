@@ -6,15 +6,20 @@ import (
 	"library-app/service"
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 )
 
 type AuthorHandler struct {
-	service service.AuthorService
+	service   service.AuthorService
+	validator *validator.Validate
 }
 
 func NewAuthorHandler(service service.AuthorService) *AuthorHandler {
-	return &AuthorHandler{service}
+	return &AuthorHandler{
+		service:   service,
+		validator: validator.New(),
+	}
 }
 
 // CreateAuthor godoc
@@ -31,6 +36,26 @@ func (h *AuthorHandler) CreateAuthor(w http.ResponseWriter, r *http.Request) {
 	var authorDTO dto.AuthorCreateDTO
 	if err := json.NewDecoder(r.Body).Decode(&authorDTO); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// if err := h.validator.Struct(authorDTO); err != nil {
+	// 	http.Error(w, err.Error(), http.StatusBadRequest)
+	// 	return
+	// }
+
+	if err := h.validator.Struct(authorDTO); err != nil {
+		// Przygotowanie odpowiedzi JSON z błędami walidacji
+		var validationErrors []string
+		for _, err := range err.(validator.ValidationErrors) {
+			validationErrors = append(validationErrors, err.Error())
+		}
+		responseData := map[string]interface{}{
+			"errors": validationErrors,
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(responseData)
 		return
 	}
 

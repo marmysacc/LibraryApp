@@ -382,7 +382,7 @@ const docTemplate = `{
                 "summary": "Delete a book by ID",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Book ID",
                         "name": "id",
                         "in": "path",
@@ -412,9 +412,14 @@ const docTemplate = `{
     "definitions": {
         "dto.AuthorCreateDTO": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 2
                 }
             }
         },
@@ -437,15 +442,24 @@ const docTemplate = `{
         },
         "dto.BookCreateDTO": {
             "type": "object",
+            "required": [
+                "author",
+                "genre",
+                "title"
+            ],
             "properties": {
                 "author": {
                     "type": "string"
                 },
                 "genre": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 25,
+                    "minLength": 2
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 2
                 }
             }
         },

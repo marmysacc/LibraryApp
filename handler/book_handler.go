@@ -6,15 +6,20 @@ import (
 	"library-app/service"
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 )
 
 type BookHandler struct {
-	service service.BookService
+	service   service.BookService
+	validator *validator.Validate
 }
 
 func NewBookHandler(service service.BookService) *BookHandler {
-	return &BookHandler{service}
+	return &BookHandler{
+		service:   service,
+		validator: validator.New(),
+	}
 }
 
 // CreateBook godoc
@@ -30,6 +35,11 @@ func NewBookHandler(service service.BookService) *BookHandler {
 func (h *BookHandler) CreateBook(w http.ResponseWriter, r *http.Request) {
 	var bookDTO dto.BookCreateDTO
 	if err := json.NewDecoder(r.Body).Decode(&bookDTO); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := h.validator.Struct(bookDTO); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -122,7 +132,7 @@ func (h *BookHandler) UpdateBook(w http.ResponseWriter, r *http.Request) {
 // @Summary Delete a book by ID
 // @Description Delete a book by ID
 // @Tags books
-// @Param id path int true "Book ID"
+// @Param id path string true "Book ID"
 // @Success 204
 // @Failure 400 {object} string
 // @Failure 500 {object} string

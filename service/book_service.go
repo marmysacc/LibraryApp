@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	dto "library-app/dtos"
 	"library-app/model"
 	"library-app/repository"
@@ -43,6 +44,18 @@ func (s *bookService) UpdateBook(bookDTO *dto.BookCreateDTO, id string) error {
 }
 
 func (s *bookService) DeleteBook(id string) error {
+	if _, err := uuid.Parse(id); err != nil {
+		return fmt.Errorf("invalid UUID format for id: %s", id)
+	}
+
+	exists, err := s.repo.ExistsByID(id)
+	if err != nil {
+		return err
+	}
+	if !exists {
+		return fmt.Errorf("book with id %s does not exist", id)
+	}
+
 	return s.repo.Delete(id)
 }
 

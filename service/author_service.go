@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	dto "library-app/dtos"
 	"library-app/model"
 	"library-app/repository"
@@ -43,6 +44,24 @@ func (s *authorService) UpdateAuthor(authorDTO *dto.AuthorCreateDTO, id string) 
 }
 
 func (s *authorService) DeleteAuthor(id string) error {
+
+	if _, err := uuid.Parse(id); err != nil {
+		return fmt.Errorf("invalid UUID format for id: %s", id)
+	}
+
+	currentAuthor, err := s.repo.GetByID(id)
+	if err != nil {
+		return err
+	}
+
+	if currentAuthor == nil {
+		return fmt.Errorf("author with id %s does not exist", id)
+	}
+
+	if len(currentAuthor.Books) > 0 {
+		return fmt.Errorf("author with id %s has %d books and cannot be deleted", id, len(currentAuthor.Books))
+	}
+
 	return s.repo.Delete(id)
 }
 
@@ -91,6 +110,6 @@ func (s *authorService) mapToAuthorUpdateDTO(authorDTO *dto.AuthorCreateDTO, cur
 	if authorDTO.Name != "" {
 		updatedAuthor.Name = authorDTO.Name
 	}
-	
+
 	return &updatedAuthor
 }

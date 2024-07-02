@@ -29,7 +29,7 @@ import (
 // @host localhost:8080
 // @BasePath /
 func main() {
-	dsn := "user=CarRental password=CarRental dbname=LibraryApp port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+	dsn := "user=postgres password=postgres dbname=LibraryApp port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)

@@ -56,13 +56,18 @@ func (h *AuthorHandler) GetAuthorByID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id := params["id"]
 
-	book, err := h.service.GetAuthorByID(id)
+	author, err := h.service.GetAuthorByID(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	json.NewEncoder(w).Encode(book)
+	w.Header().Set("Content-Type", "application/json")
+	encoder := json.NewEncoder(w)
+	encoder.SetIndent("", "    ") // Ustawienie wcięć dla lepszego formatowania
+	if err := encoder.Encode(author); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 // GetAllAuthors godoc
@@ -74,13 +79,18 @@ func (h *AuthorHandler) GetAuthorByID(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} string
 // @Router /authors [get]
 func (h *AuthorHandler) GetAllAuthors(w http.ResponseWriter, r *http.Request) {
-	books, err := h.service.GetAllAuthors()
+	authors, err := h.service.GetAllAuthors()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	json.NewEncoder(w).Encode(books)
+	w.Header().Set("Content-Type", "application/json")
+	encoder := json.NewEncoder(w)
+	encoder.SetIndent("", "    ") // Ustawienie wcięć dla lepszego formatowania
+	if err := encoder.Encode(authors); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 // UpdateAuthor godoc

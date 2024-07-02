@@ -25,10 +25,6 @@ func NewBookService(repo repository.BookRepository) BookService {
 	return &bookService{repo}
 }
 
-// func (s *bookService) CreateBook(book *dto.BookCreateDTO) error {
-// 	return s.repo.Create(book)
-// }
-
 func (s *bookService) CreateBook(bookDTO *dto.BookCreateDTO) error {
 	book := s.mapToBookDTO(bookDTO)
 	book.ID = uuid.New().String()
@@ -37,8 +33,13 @@ func (s *bookService) CreateBook(bookDTO *dto.BookCreateDTO) error {
 }
 
 func (s *bookService) UpdateBook(bookDTO *dto.BookCreateDTO, id string) error {
-	book := s.mapToBookUpdateDTO(bookDTO, id)
-	return s.repo.Update(book)
+	currentBook, err := s.repo.GetByID(id)
+	if err != nil {
+		return err
+	}
+	updatedBook := s.mapToBookUpdateDTO(bookDTO, currentBook)
+
+	return s.repo.Update(updatedBook)
 }
 
 func (s *bookService) DeleteBook(id string) error {
@@ -84,11 +85,18 @@ func (s *bookService) mapToBookDTO(bookDTO *dto.BookCreateDTO) *model.Book {
 	}
 }
 
-func (s *bookService) mapToBookUpdateDTO(bookDTO *dto.BookCreateDTO, id string) *model.Book {
-	return &model.Book{
-		ID:       id,
-		Title:    bookDTO.Title,
-		AuthorID: bookDTO.AuthorID,
-		Genre:    bookDTO.Genre,
+func (s *bookService) mapToBookUpdateDTO(bookDTO *dto.BookCreateDTO, currentBook *model.Book) *model.Book {
+	updatedBook := *currentBook
+
+	if bookDTO.Title != "" {
+		updatedBook.Title = bookDTO.Title
 	}
+	if bookDTO.AuthorID != "" {
+		updatedBook.AuthorID = bookDTO.AuthorID
+	}
+	if bookDTO.Genre != "" {
+		updatedBook.Genre = bookDTO.Genre
+	}
+
+	return &updatedBook
 }

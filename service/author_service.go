@@ -33,8 +33,13 @@ func (s *authorService) CreateAuthor(authorDTO *dto.AuthorCreateDTO) error {
 }
 
 func (s *authorService) UpdateAuthor(authorDTO *dto.AuthorCreateDTO, id string) error {
-	author := s.mapToAuthorUpdateDTO(authorDTO, id)
-	return s.repo.Update(author)
+	currentAuthor, err := s.repo.GetByID(id)
+	if err != nil {
+		return err
+	}
+
+	updatedAuthor := s.mapToAuthorUpdateDTO(authorDTO, currentAuthor)
+	return s.repo.Update(updatedAuthor)
 }
 
 func (s *authorService) DeleteAuthor(id string) error {
@@ -80,9 +85,12 @@ func (s *authorService) mapToAuthorDTO(authorDTO *dto.AuthorCreateDTO) *model.Au
 	}
 }
 
-func (s *authorService) mapToAuthorUpdateDTO(authorDTO *dto.AuthorCreateDTO, id string) *model.Author {
-	return &model.Author{
-		ID:   id,
-		Name: authorDTO.Name,
+func (s *authorService) mapToAuthorUpdateDTO(authorDTO *dto.AuthorCreateDTO, currentAuthor *model.Author) *model.Author {
+	updatedAuthor := *currentAuthor
+
+	if authorDTO.Name != "" {
+		updatedAuthor.Name = authorDTO.Name
 	}
+	
+	return &updatedAuthor
 }
